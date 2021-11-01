@@ -1,0 +1,109 @@
+﻿@page
+@model Football.Pages.ShowFootballersModel
+@{
+    ViewData["Title"] = "Просмотр футболистов";
+}
+
+<h2>@Model.Message</h2>
+<form method="post" id="editFootballer"></form>
+<table id="footballersTable" border="1" cellpadding="5">
+    <tr>
+        <td>id</td>
+        <td>Имя</td>
+        <td>Фамилия</td>
+        <td>Пол</td>
+        <td>Дата рождения</td>
+        <td>Название команды</td>
+        <td>Страна</td>
+        <td>Ред.</td>
+    </tr>
+@for (int i = 0; i < Model.FootballersTable.Count; i++)
+    {
+<tr>
+    @if (Model.FootballersTable[i].Id == Model.FootballerToEditId)
+    {
+        <td hidden>
+            <input type="number" name="editId" form="editFootballer" value="@Model.FootballersTable[i].Id" hidden />
+        </td>
+        <td>
+            <a href="/ShowFootballers?id=@Model.FootballersTable[i].Id&delete=true">
+                <img src="~/images/remove.png" width="20" height="20" alt="удалить" />
+            </a>
+        </td>
+        <td>
+            <input type="text" name="FirstName" required value="@Model.FootballersTable[i].FirstName" form="editFootballer" />
+        </td>
+        <td>
+            <input type="text" name="SecondName" required value="@Model.FootballersTable[i].SecondName" form="editFootballer" />
+        </td>
+        <td>
+
+            @if (Model.FootballersTable[i].Gender == Models.Enums.GenderEnum.Male)
+            {
+                <input type="radio" name="Gender" value="Male" form="editFootballer" checked />
+                <a>Муж.</a>
+                <br />
+                <input type="radio" name="Gender" value="Female" form="editFootballer" />
+                <a>Жен.</a>
+            }
+            else
+            {
+                <input type="radio" name="Gender" value="Male" form="editFootballer" />
+                <a>Муж.</a>
+                <br />
+                <input type="radio" name="Gender" value="Female" form="editFootballer" checked />
+                <a>Жен.</a>
+            }
+        </td>
+        <td>
+            <input type="date" name="DateOfBrith" required value="@Model.FootballersTable[i].DateOfBrith.ToString("yyyy-MM-dd")"
+                   form="editFootballer" min="1900-01-01" max="2020-01-01" />
+        </td>
+        <td>
+            <input list="Team" name="Team" required value="@Model.FootballersTable[i].Team.Name" form="editFootballer" />
+            <datalist id="Team">
+                @foreach (var team in Model.teamsRepository.GetTeamsNames().Result)
+                {
+                    <option>@team</option>
+
+                }
+            </datalist>
+        </td>
+        <td>
+            <select style="width: 100px" name="Country" form="editFootballer">
+
+                @foreach (Football.Models.Enums.CountryEnum country in Enum.GetValues(typeof(Football.Models.Enums.CountryEnum)))
+                {
+                    if (country == Model.FootballersTable[i].Country)
+                    {
+                        <option selected>@Football.Models.Enums.EnumMapper.CountryToString(country)</option>
+                    }
+                    else
+                    {
+                        <option>@Football.Models.Enums.EnumMapper.CountryToString(country)</option>
+                    }
+                }
+            </select>
+        </td>
+        <td>
+            <input type="submit" value="Изменить" form="editFootballer" />
+        </td>
+    }
+    else
+    {
+        <td>@Model.FootballersTable[i].Id</td>
+        <td>@Model.FootballersTable[i].FirstName</td>
+        <td>@Model.FootballersTable[i].SecondName</td>
+        <td>@Model.FootballersTable[i].GetGenderString()</td>
+        <td>@Model.FootballersTable[i].DateOfBrith.ToShortDateString()</td>
+        <td>@Model.FootballersTable[i].Team.Name</td>
+        <td>@Model.FootballersTable[i].GetCountryString()</td>
+        <td>
+            <a href="/ShowFootballers?id=@Model.FootballersTable[i].Id">
+                <img src="~/images/edit.png" width="20" height="20" alt="ред." />
+            </a>
+        </td>
+    }
+</tr>
+}
+</table>

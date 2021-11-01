@@ -1,0 +1,37 @@
+﻿@page
+@model Football.Pages.AddModel
+@{
+    ViewData["Title"] = "Добавить футболиста";
+}
+
+<h2>@Model.Message</h2>
+
+<style>
+    input, select {
+        margin-bottom: 3px;
+        margin-top: 3px;
+        padding: 2px;
+    }
+</style>
+
+<form method="post">
+    <input type="text" name="firstName" required placeholder="Имя"/> <br />
+    <input type="text" name="secondName" required placeholder="Фамилия" /> <br />
+    Пол: <input type="radio" name="gender" value="Мужской" checked/>Мужской
+    <input type="radio" name="gender" value="Женский" />Женский<br />
+    Дата рождения: <input type="date" name="dateOfBrith" required placeholder="Дата рождения" min="1900-01-01", max="2010-01-01"/> <br />
+    <input list="team" name="team" required placeholder="Команда" /> <br />
+
+    <datalist id="team">
+        @foreach (var team in Model.Teams)
+        {
+            <option>@team</option>
+        }
+    </datalist>
+    Страна: <select style="width: 120px" name="country">
+        <option>Россия</option>
+        <option>США</option>
+        <option>Италия</option>
+    </select> <br />
+    <input type="submit" placeholder="Отправить"/>
+</form>
